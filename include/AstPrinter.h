@@ -2,7 +2,15 @@
 // Created by berci on 2021. 08. 07..
 //
 
-#ifndef LOXPP_ASTPRINTER_H
-#define LOXPP_ASTPRINTER_H
+#pragma once
 
-#endif //LOXPP_ASTPRINTER_H
+#include <Expr.h>
+
+#include <string>
+#include <memory>
+
+namespace Lox {
+
+    std::string AstPrinter(const std::shared_ptr<Expr>& expr);
+
+}

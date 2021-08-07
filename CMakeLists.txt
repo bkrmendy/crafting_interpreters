@@ -5,7 +5,18 @@ set(CMAKE_CXX_STANDARD 23)
 
 add_subdirectory(include/fmt)
 
-add_executable(loxpp main.cpp include/TokenType.h include/Token.h include/Scanner.h src/Scanner.cpp include/utils.h src/utils.cpp include/LoxValue.h)
+add_executable(loxpp
+        main.cpp
+        include/TokenType.h
+        include/Token.h
+        include/Scanner.h
+        include/utils.h
+        include/Value.h
+        include/Expr.h
+
+        src/Scanner.cpp
+        src/utils.cpp
+        include/Visitor.h include/AstPrinter.h src/AstPrinter.cpp src/Value.cpp)
 
 include_directories(loxpp include)
 target_link_libraries(loxpp fmt)

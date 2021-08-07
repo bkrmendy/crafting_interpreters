@@ -14,7 +14,7 @@ std::vector<Token> Scanner::scan_tokens() {
         scan_token();
     }
 
-    tokens_.emplace_back(TokenType::END, "", std::make_shared<LoxValue>(), this->line_);
+    tokens_.emplace_back(TokenType::END, "", std::make_shared<Value>(), this->line_);
     return this->tokens_;
 }
 
@@ -85,7 +85,7 @@ char Scanner::advance() {
 
 void Scanner::put_token(TokenType type) {
     std::string text = source_.substr(this->start_, this->current_);
-    this->tokens_.emplace_back(type, text, std::make_shared<LoxValue>(), this->line_);
+    this->tokens_.emplace_back(type, text, std::make_shared<Lox::Value>(), this->line_);
 }
 
 bool Scanner::match(char c) {
@@ -124,11 +124,11 @@ void Scanner::string() {
 
     advance();
     std::string value = this->source_.substr(this->start_ + 1, this->current_ - 1);
-    auto loxString = std::make_shared<LoxString>(value);
+    auto loxString = std::make_shared<Lox::String>(value);
     this->add_token(TokenType::STRING, loxString);
 }
 
-void Scanner::add_token(TokenType type, std::shared_ptr<LoxValue> value) {
+void Scanner::add_token(TokenType type, std::shared_ptr<Value> value) {
     std::string text = source_.substr(this->start_, this->current_);
     this->tokens_.emplace_back(type, text, std::move(value), this->line_);
 }
@@ -152,7 +152,7 @@ void Scanner::number() {
 
     auto literal = this->source_.substr(this->start_, this->current_);
     auto number = std::stod(literal);
-    auto loxNumber = std::make_shared<LoxNumber>(number);
+    auto loxNumber = std::make_shared<Lox::Number>(number);
     this->add_token(TokenType::NUMBER, loxNumber);
 }
 

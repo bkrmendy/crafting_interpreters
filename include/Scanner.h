@@ -58,7 +58,7 @@ public:
 
     void put_token(TokenType type);
 
-    void add_token(TokenType type, std::shared_ptr<LoxValue> value);
+    void add_token(TokenType type, std::shared_ptr<Lox::Value> value);
 
     bool is_at_end();
 

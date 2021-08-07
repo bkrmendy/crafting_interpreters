@@ -5,7 +5,7 @@
 #pragma once
 
 #include <TokenType.h>
-#include <LoxValue.h>
+#include <Value.h>
 
 #include <memory>
 #include <string>
@@ -16,13 +16,13 @@ public:
     TokenType type_;
     std::string lexeme_;
     int line_;
-    std::shared_ptr<LoxValue> value_;
+    std::shared_ptr<Lox::Value> value_;
 
 
     Token(
             TokenType type,
             std::string lexeme,
-            std::shared_ptr<LoxValue> value,
+            std::shared_ptr<Lox::Value> value,
             int line
     ) : type_{type}, lexeme_{std::move(lexeme)}, value_{std::move(value)}, line_{line} {}
 };

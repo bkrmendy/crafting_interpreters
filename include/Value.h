@@ -7,25 +7,33 @@
 #include <string>
 #include <utility>
 
-class LoxValue {
-public:
-    virtual ~LoxValue() = default;
-};
+namespace Lox {
+    class Value {
+    public:
+        virtual std::string toString() = 0;
+        virtual ~Value() = 0;
+    };
 
-class LoxString : public LoxValue {
-public:
-    std::string value;
+    class String : public Value {
+    public:
+        std::string value;
 
-    explicit LoxString(std::string value_) : value{std::move(value_)} {}
+        explicit String(std::string value_) : value{std::move(value_)} {}
 
-    ~LoxString() override = default;
-};
+        std::string toString() final;
 
-class LoxNumber : public LoxValue {
-public:
-    double value;
+        ~String() override = default;
+    };
 
-    explicit LoxNumber(double value_) : value{value_} {}
+    class Number : public Value {
+    public:
+        double value;
 
-    ~LoxNumber() override = default;
-};
+        explicit Number(double value_) : value{value_} {}
+
+        std::string toString() final;
+
+        ~Number() override = default;
+    };
+}
+
