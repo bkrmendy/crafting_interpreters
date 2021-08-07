@@ -9,7 +9,7 @@
 
 class LoxValue {
 public:
-    ~LoxValue() = default;
+    virtual ~LoxValue() = default;
 };
 
 class LoxString : public LoxValue {
@@ -18,7 +18,7 @@ public:
 
     explicit LoxString(std::string value_) : value{std::move(value_)} {}
 
-    ~LoxString() = default;
+    ~LoxString() override = default;
 };
 
 class LoxNumber : public LoxValue {
@@ -27,5 +27,5 @@ public:
 
     explicit LoxNumber(double value_) : value{value_} {}
 
-    ~LoxNumber() = default;
+    ~LoxNumber() override = default;
 };
