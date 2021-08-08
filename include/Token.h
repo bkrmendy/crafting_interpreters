@@ -11,18 +11,20 @@
 #include <string>
 #include <utility>
 
-class Token {
-public:
-    TokenType type_;
-    std::string lexeme_;
-    int line_;
-    std::shared_ptr<Lox::Value> value_;
+namespace Lox {
+    class Token {
+    public:
+        TokenType type_;
+        std::string lexeme_;
+        int line_;
+        std::shared_ptr<Lox::Value> value_;
 
 
-    Token(
-            TokenType type,
-            std::string lexeme,
-            std::shared_ptr<Lox::Value> value,
-            int line
-    ) : type_{type}, lexeme_{std::move(lexeme)}, value_{std::move(value)}, line_{line} {}
-};
+        Token(
+                TokenType type,
+                std::string lexeme,
+                std::shared_ptr<Lox::Value> value,
+                int line
+        ) : type_{type}, lexeme_{std::move(lexeme)}, value_{std::move(value)}, line_{line} {}
+    };
+}

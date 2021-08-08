@@ -16,7 +16,7 @@ add_executable(loxpp
 
         src/Scanner.cpp
         src/utils.cpp
-        include/Visitor.h include/AstPrinter.h src/AstPrinter.cpp src/Value.cpp)
+        include/Visitor.h include/AstPrinter.h src/AstPrinter.cpp src/Value.cpp include/Parser.h src/Parser.cpp include/ParseError.h)
 
 include_directories(loxpp include)
 target_link_libraries(loxpp fmt)

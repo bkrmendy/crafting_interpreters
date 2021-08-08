@@ -22,9 +22,9 @@ namespace Lox {
     public:
         std::shared_ptr<Expr> left;
         std::shared_ptr<Expr> right;
-        std::shared_ptr<Token> op;
+        Token op;
 
-        Binary(ExprPtr left_, ExprPtr right_, std::shared_ptr<Token> op_)
+        Binary(ExprPtr left_, ExprPtr right_, Token op_)
             : left{std::move(left_)}, right{std::move(right_)}, op{std::move(op_)} {}
 
         ~Binary() override = default;
@@ -57,10 +57,10 @@ namespace Lox {
 
     class Unary : public Expr {
     public:
-        std::shared_ptr<Token> op;
+        Token op;
         std::shared_ptr<Expr> operand;
 
-        Unary(std::shared_ptr<Token> op_, std::shared_ptr<Expr> operand_)
+        Unary(Token op_, std::shared_ptr<Expr> operand_)
             : op{std::move(op_)}, operand{std::move(operand_)} {}
 
         ~Unary() override = default;

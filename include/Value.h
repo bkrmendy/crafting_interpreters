@@ -35,5 +35,22 @@ namespace Lox {
 
         ~Number() override = default;
     };
+
+    class Boolean : public Value {
+    public:
+        bool value;
+
+        explicit Boolean(bool value_) : value{value_} {}
+
+        std::string toString() final;
+
+        ~Boolean() override = default;
+    };
+
+    class Null : public Value {
+    public:
+        Null() = default;
+        ~Null() override = default;
+    };
 }
 

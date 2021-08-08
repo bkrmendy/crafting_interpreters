@@ -13,4 +13,8 @@ namespace Lox {
     std::string Number::toString() {
         return std::to_string(this->value);
     }
+
+    std::string Boolean::toString() {
+        return std::to_string(this->value);
+    }
 }
