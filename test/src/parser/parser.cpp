@@ -3,8 +3,12 @@
 //
 
 #include "gtest/gtest.h"
+#include "ApprovalTests.hpp"
 
 TEST(ParserTests, Example) {
-    EXPECT_EQ(1, 1);
+    ApprovalTests::Approvals::verify(1);
 }
 
+TEST(ParserTests, OtherExample) {
+    ApprovalTests::Approvals::verify("hello");
+}
