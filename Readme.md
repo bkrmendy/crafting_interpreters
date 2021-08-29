@@ -13,6 +13,7 @@ Work in progress!
 - [ ] implement mixfix parsing (see above)
 
 
+- [ ] Unit tests for unit testable stuff
 - [ ] Check `std::shared_ptr` usage 
 
 ## Places where I didn't follow the site:
@@ -25,3 +26,7 @@ I just typed them out manually.
 ### Visitor function instead of visitor class
 Since expressions are represented by `std::shared_ptr`s, it's pretty easy to "pattern match" by "std::dynamic_pointer_cast"-ing
 in a cascade of `if`s. Another possibility would have been to use `std::variant` and `std::visit`.
+
+### Testint
+The book completely glosses over testing, which (in my opinion) is not a great thing, testing interpreters/compilers is far from
+trivial. I use approval tests for parsing. 

@@ -86,10 +86,11 @@ namespace Lox {
                     case TokenType::GREATER_EQUAL: return std::make_shared<Boolean>(l >= r);
                     case TokenType::LESS: return std::make_shared<Boolean>(l < r);
                     case TokenType::LESS_EQUAL: return std::make_shared<Boolean>(l <= r);
+                    default: break;
                 }
             }
 
-            if (op.type_ == TokenType::EQUAL) {
+            if (op.type_ == TokenType::EQUAL_EQUAL) {
                 return std::make_shared<Boolean>(is_equal(left, right));
             }
 

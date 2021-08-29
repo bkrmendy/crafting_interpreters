@@ -4,6 +4,7 @@
 
 #include <Parser.h>
 #include <Value.h>
+#include <Expr.h>
 #include <ParseError.h>
 
 #include <iostream>
@@ -11,7 +12,14 @@
 namespace Lox {
 
     ExprPtr Parser::expression() {
-        return this->equality();
+        if (auto expr = this->equality()) {
+            return expr;
+        }
+        if (auto expr = this->primary()) {
+            return expr;
+        }
+
+        return nullptr;
     }
 
     ExprPtr Parser::equality() {
@@ -64,7 +72,7 @@ namespace Lox {
     }
 
     bool Parser::is_at_end() {
-        return current_ < tokens_.size();
+        return current_ >= tokens_.size();
     }
 
     Token Parser::advance() {
@@ -163,8 +171,8 @@ namespace Lox {
                 case TokenType::PRINT:
                 case TokenType::RETURN:
                     return;
+                default: advance();
             }
-            advance();
         }
     }
 

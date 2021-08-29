@@ -33,6 +33,8 @@ namespace Lox {
         if (std::dynamic_pointer_cast<Null>(value)) {
             return true;
         }
+
+        return false;
     }
 
     bool is_equal(const std::shared_ptr<Value>& left, const std::shared_ptr<Value>& right) {

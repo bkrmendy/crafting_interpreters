@@ -6,6 +6,8 @@
 
 namespace Lox {
 
+    Value::~Value() = default;
+
     std::string String::toString() {
         return this->value;
     }
@@ -15,7 +17,10 @@ namespace Lox {
     }
 
     std::string Boolean::toString() {
-        return std::to_string(this->value);
+        if (this->value) {
+            return "true";
+        }
+        return "false";
     }
 
     std::string Null::toString() {

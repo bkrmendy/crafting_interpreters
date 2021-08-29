@@ -39,42 +39,42 @@ namespace Lox {
             case '!':
                 put_token(match('=') ? TokenType::BANG_EQUAL : TokenType::BANG);
                 break;
-                case '=':
-                    put_token(match('=') ? TokenType::EQUAL_EQUAL : TokenType::EQUAL);
-                    break;
-                    case '<':
-                        put_token(match('=') ? TokenType::LESS_EQUAL : TokenType::LESS);
-                        break;
-                        case '>':
-                            put_token(match('=') ? TokenType::GREATER_EQUAL : TokenType::GREATER);
-                            break;
-                            case '/':
-                                if (match('/')) {
-                                    while (peek() != '\n' and !is_at_end()) {
-                                        advance();
-                                    }
-                                } else {
-                                    put_token(TokenType::SLASH);
-                                }
-                                break;
-                                case ' ':
-                                    case '\r':
-                                        case '\t':
-                                            // ignore whitespace
-                                            break;
-                                case '\n':
-                                    this->line_ = this->line_ + 1;
-                                    break;
-                                    case '"': string(); break;
-                                    default:
-                                        if (is_digit(c)) {
-                                            number();
-                                        } else if (is_alpha(c)) {
-
-                                        } else {
-                                            error(this->line_, "Unexpected character");
-                                        }
-                                        break;
+            case '=':
+                put_token(match('=') ? TokenType::EQUAL_EQUAL : TokenType::EQUAL);
+                break;
+            case '<':
+                put_token(match('=') ? TokenType::LESS_EQUAL : TokenType::LESS);
+                break;
+            case '>':
+                put_token(match('=') ? TokenType::GREATER_EQUAL : TokenType::GREATER);
+                break;
+            case '/':
+                if (match('/')) {
+                    while (peek() != '\n' and !is_at_end()) {
+                        advance();
+                    }
+                } else {
+                    put_token(TokenType::SLASH);
+                }
+                break;
+            case ' ':
+            case '\r':
+            case '\t':
+            // ignore whitespace
+            break;
+            case '\n':
+                this->line_ = this->line_ + 1;
+                break;
+            case '"': string(); break;
+            default:
+                if (is_digit(c)) {
+                    number();
+                } else if (is_alpha(c)) {
+                    identifier();
+                } else {
+                    error(this->line_, "Unexpected character");
+                }
+                break;
         }
     }
 
@@ -85,7 +85,8 @@ namespace Lox {
     }
 
     void Scanner::put_token(TokenType type) {
-        std::string text = source_.substr(this->start_, this->current_);
+        auto len = this->current_ - this->start_;
+        std::string text = source_.substr(this->start_, len);
         this->tokens_.emplace_back(type, text, nullptr, this->line_);
     }
 
