@@ -11,13 +11,13 @@ namespace Lox {
         if (BinaryPtr binary = std::dynamic_pointer_cast<Binary>(expr)) {
             auto left = AstPrinter(binary->left);
             auto right = AstPrinter(binary->right);
-            auto op = binary->op->lexeme_;
+            auto op = binary->op.lexeme_;
 
             return "(" + op + " " + left + " " + right + ")";
         }
 
         if (UnaryPtr unary = std::dynamic_pointer_cast<Unary>(expr)) {
-            auto op = unary->op->lexeme_;
+            auto op = unary->op.lexeme_;
             auto operand = AstPrinter(unary->operand);
 
             return "(" + op + " " + operand + ")";

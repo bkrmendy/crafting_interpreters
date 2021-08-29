@@ -17,4 +17,8 @@ namespace Lox {
     std::string Boolean::toString() {
         return std::to_string(this->value);
     }
+
+    std::string Null::toString() {
+        return "null";
+    }
 }

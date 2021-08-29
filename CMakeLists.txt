@@ -5,21 +5,23 @@ set(CMAKE_CXX_STANDARD 23)
 
 add_subdirectory(include/fmt)
 
-add_executable(loxpp
-        main.cpp
-        include/TokenType.h
-        include/Token.h
-        include/Scanner.h
-        include/utils.h
-        include/Value.h
-        include/Expr.h
-
-        src/Scanner.cpp
-        src/utils.cpp
-        include/Visitor.h include/AstPrinter.h src/AstPrinter.cpp src/Value.cpp include/Parser.h src/Parser.cpp include/ParseError.h include/AstInterpreter.h src/AstInterpreter.cpp include/RuntimeError.h include/TypeCast.h)
+add_library(loxpp
+            lib/Scanner.cpp
+            lib/utils.cpp
+            lib/AstPrinter.cpp
+            lib/Value.cpp
+            lib/Parser.cpp
+            lib/AstInterpreter.cpp
+            lib/TypeCast.cpp
+            lib/RuntimeError.cpp
+        )
 
 include_directories(loxpp include)
 target_link_libraries(loxpp fmt)
+
+add_executable(loxc main.cpp)
+include_directories(loxc include)
+target_link_libraries(loxc loxpp fmt)
 
 enable_testing()
 add_subdirectory(test)

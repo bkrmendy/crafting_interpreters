@@ -50,6 +50,9 @@ namespace Lox {
     class Null : public Value {
     public:
         Null() = default;
+
+        std::string toString() final;
+
         ~Null() override = default;
     };
 }
