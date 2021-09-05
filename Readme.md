@@ -14,7 +14,12 @@ Work in progress!
 
 
 - [ ] Unit tests for unit testable stuff
-- [ ] Check `std::shared_ptr` usage 
+- [ ] Check `std::shared_ptr` usage
+
+## Unimplemented features
+- [ ] Two level language: https://dl.acm.org/doi/10.5555/130665, https://arxiv.org/pdf/cs/9810010.pdf
+- [ ] Compile with LLVM
+- [ ] STM
 
 ## Places where I didn't follow the site:
 
@@ -27,6 +32,10 @@ I just typed them out manually.
 Since expressions are represented by `std::shared_ptr`s, it's pretty easy to "pattern match" by "std::dynamic_pointer_cast"-ing
 in a cascade of `if`s. Another possibility would have been to use `std::variant` and `std::visit`.
 
-### Testint
+### Testing
 The book completely glosses over testing, which (in my opinion) is not a great thing, testing interpreters/compilers is far from
-trivial. I use approval tests for parsing. 
+trivial. I use approval tests for parsing.
+
+## Resources
+- https://flow.org/en/docs/lang/
+- 

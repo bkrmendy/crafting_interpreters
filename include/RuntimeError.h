@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <string>
 #include <exception>
 
 namespace Lox {
@@ -11,7 +12,7 @@ namespace Lox {
         const char* message_;
 
     public:
-        RuntimeError(const char* message) : message_{message} {}
+        explicit RuntimeError(const std::string& message) : message_{message.c_str()} {}
 
         const char * what() const noexcept override;
     };
