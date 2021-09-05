@@ -227,3 +227,52 @@ TEST(ParserTests, ForLoop) {
     )";
     runSource(source);
 }
+
+TEST(ParserTests, FunctionDefinition) {
+    auto source = R"(
+        function add(a, b) {
+            a + b;
+        }
+    )";
+    runSource(source);
+}
+
+TEST(ParserTests, FunctionCall) {
+    auto source = R"(
+        function add(a, b) {
+            a + b;
+        }
+        add(4, 5);
+    )";
+    runSource(source);
+}
+
+TEST(ParserTests, Increment) {
+    auto source = R"(
+        function inc(n) {
+            n + 1;
+        }
+        inc(5);
+    )";
+    runSource(source);
+}
+
+TEST(ParserTests, Fibonacci) {
+    auto source = R"(
+        function fib(n) {
+            var a = 0;
+            var b = 1;
+            for (var i = 0; i < n - 2; i = i + 1) {
+                var temp = b;
+                b = a + b;
+                a = temp;
+            }
+            b;
+        }
+        print "The 5th Fibonacci number is:";
+        print fib(5);
+        print "The 8th Fibonacci number is:";
+        print fib(8);
+    )";
+    runSource(source);
+}

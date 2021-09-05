@@ -6,6 +6,7 @@
 
 #include <string>
 #include <utility>
+#include <vector>
 
 namespace Lox {
     class Value {
@@ -55,5 +56,23 @@ namespace Lox {
 
         ~Null() override = default;
     };
+
+    // forward decl
+    class BlockStatement;
+
+    class Function : public Value {
+    public:
+        std::vector<std::string> params;
+        std::shared_ptr<BlockStatement> body;
+
+        Function(std::vector<std::string> params_, std::shared_ptr<BlockStatement> body_)
+            : params{std::move(params_)}, body{std::move(body_)} {}
+
+        std::string toString() override;
+
+        ~Function() override = default;
+    };
+
+    using FunctionPtr = std::shared_ptr<Function>;
 }
 

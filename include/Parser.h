@@ -41,6 +41,8 @@ namespace Lox {
 
         BlockStatementPtr forStatement();
 
+        FunctionDeclarationPtr functionDeclaration();
+
         ExprPtr assignment();
 
         ExprPtr expression();

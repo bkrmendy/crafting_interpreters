@@ -8,6 +8,7 @@
 #include <ParseError.h>
 #include <utils.h>
 
+#include <vector>
 #include <iostream>
 
 namespace Lox {
@@ -124,7 +125,24 @@ namespace Lox {
         }
 
         if (match({ TokenType::IDENTIFIER })) {
-            return std::make_shared<Var>(previous());
+            auto var = std::make_shared<Var>(previous());
+            if (!match({ TokenType::LEFT_PAREN })) {
+                return var;
+            }
+
+            std::vector<ExprPtr> arguments{};
+
+            while (not check(TokenType::RIGHT_PAREN) and not is_at_end()) {
+                auto arg = primary();
+                arguments.push_back(arg);
+                if (not check(TokenType::RIGHT_PAREN)) {
+                    consume(TokenType::COMMA, "Expected `,`");
+                }
+            }
+
+            consume(TokenType::RIGHT_PAREN, "Expected `)`");
+
+            return std::make_shared<FunctionCall>(var->name.lexeme_, arguments);
         }
 
         Token last = tokens_.at(current_);
@@ -205,7 +223,11 @@ namespace Lox {
         }
 
         if (match({ TokenType::FOR })) {
-            return  forStatement();
+            return forStatement();
+        }
+
+        if (match({ TokenType::FUN })) {
+            return functionDeclaration();
         }
 
         return expressionStatement();
@@ -323,5 +345,26 @@ namespace Lox {
         };
 
         return std::make_shared<BlockStatement>(desugaredFor);
+    }
+
+    FunctionDeclarationPtr Parser::functionDeclaration() {
+        auto name = consume(TokenType::IDENTIFIER, "Expected an identifier").lexeme_;
+        consume(TokenType::LEFT_PAREN, "Expected `(`");
+
+        std::vector<std::string> params{};
+
+        while (not check(TokenType::RIGHT_PAREN) and not is_at_end()) {
+            auto param = consume(TokenType::IDENTIFIER, "Expected an identifier");
+            params.push_back(param.lexeme_);
+            if (not check(TokenType::RIGHT_PAREN)) {
+                consume(TokenType::COMMA, "Expected `,`");
+            }
+        }
+        consume(TokenType::RIGHT_PAREN, "Expected `)");
+        consume(TokenType::LEFT_BRACE, "Expected `{");
+
+        auto body = block();
+
+        return std::make_shared<FunctionDeclaration>(name, params, body);
     }
 }

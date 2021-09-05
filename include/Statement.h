@@ -4,8 +4,10 @@
 
 #pragma once
 
+#include <Token.h>
 #include <Expr.h>
 
+#include <string>
 #include <memory>
 #include <utility>
 #include <vector>
@@ -86,4 +88,18 @@ namespace Lox {
     };
 
     using WhileStatementPtr = std::shared_ptr<WhileStatement>;
+
+    class FunctionDeclaration : public Statement {
+    public:
+        std::string name;
+        std::vector<std::string> parameters;
+        BlockStatementPtr body;
+
+        FunctionDeclaration(std::string name_, std::vector<std::string> parameters_, BlockStatementPtr body_)
+            : name{std::move(name_)}, parameters{std::move(parameters_)}, body{std::move(body_)} {}
+
+        ~FunctionDeclaration() override = default;
+    };
+
+    using FunctionDeclarationPtr = std::shared_ptr<FunctionDeclaration>;
 }

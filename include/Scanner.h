@@ -40,7 +40,7 @@ namespace Lox {
 
                 {"var", TokenType::VAR},
 
-                {"fun", TokenType::FUN},
+                {"function", TokenType::FUN},
                 {"print", TokenType::PRINT},
                 {"return", TokenType::RETURN},
 

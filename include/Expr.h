@@ -8,6 +8,7 @@
 
 #include <memory>
 #include <utility>
+#include <vector>
 
 namespace Lox {
 
@@ -86,6 +87,17 @@ namespace Lox {
         Assignment(Token name_, ExprPtr value_) : name{std::move(name_)}, value{std::move(value_)} {}
 
         ~Assignment() override = default;
+    };
+
+    class FunctionCall : public Expr {
+    public:
+        std::string name;
+        std::vector<ExprPtr> arguments;
+
+        FunctionCall(std::string name_, std::vector<ExprPtr> arguments_)
+            : name{std::move(name_)}, arguments{std::move(arguments_)} {}
+
+        ~FunctionCall() override = default;
     };
 }
 

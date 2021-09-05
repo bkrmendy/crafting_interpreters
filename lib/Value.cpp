@@ -26,4 +26,8 @@ namespace Lox {
     std::string Null::toString() {
         return "null";
     }
+
+    std::string Function::toString() {
+        return "[Function definition]";
+    }
 }
