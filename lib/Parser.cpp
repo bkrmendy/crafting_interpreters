@@ -92,7 +92,7 @@ namespace Lox {
     ExprPtr Parser::factor() {
         ExprPtr expr = unary();
 
-        while (match({ TokenType::SLASH, TokenType::STAR })) {
+        while (match({ TokenType::SLASH, TokenType::STAR, TokenType::MODULO, TokenType::AND, TokenType::OR })) {
             Token op = previous();
             ExprPtr right = unary();
             expr = std::make_shared<Binary>(expr, right, op);
@@ -133,7 +133,7 @@ namespace Lox {
             std::vector<ExprPtr> arguments{};
 
             while (not check(TokenType::RIGHT_PAREN) and not is_at_end()) {
-                auto arg = primary();
+                auto arg = expression();
                 arguments.push_back(arg);
                 if (not check(TokenType::RIGHT_PAREN)) {
                     consume(TokenType::COMMA, "Expected `,`");

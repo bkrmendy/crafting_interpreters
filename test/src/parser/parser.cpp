@@ -78,6 +78,10 @@ TEST(ParserTests, AllComparinons) {
     runSource(source);
 }
 
+TEST(ParserTests, Modulo) {
+    runSource("5 % 2;");
+}
+
 TEST(ParserTests, Parentheses) {
     runSource("3 * (2 + 2);");
 }
@@ -88,6 +92,23 @@ TEST(ParserTests, PrintStatement) {
 
 TEST(ParserTests, PrintAString) {
     auto source = R"(print "Hello World!";)";
+    runSource(source);
+}
+
+TEST(ParserTests, BooleanAlgebra) {
+    auto source = R"(
+        for (var i = 0; i <= 1; i = i + 1) {
+            for (var j = 0; j <= 1; j = j + 1) {
+                print i;
+                print j;
+                print "and:";
+                print i and j;
+                print "or:";
+                print i or j;
+                print "---";
+            }
+        }
+    )";
     runSource(source);
 }
 
@@ -273,6 +294,67 @@ TEST(ParserTests, Fibonacci) {
         print fib(5);
         print "The 8th Fibonacci number is:";
         print fib(8);
+    )";
+    runSource(source);
+}
+
+TEST(ParserTests, Recursion) {
+    auto source = R"(
+        function factorial(n) {
+            if (n < 2) {
+                1;
+            } else {
+                n * factorial(n - 1);
+            }
+        }
+        factorial(5);
+    )";
+
+    runSource(source);
+}
+
+TEST(ParserTests, Fizzbuzz) {
+    auto source = R"(
+        function fizzbuzz(n) {
+            var counter = 1;
+            while(counter <= n) {
+                if (counter % 3 == 0) {
+                    if (counter % 5 == 0) {
+                        print "fizzbuzz";
+                    } else {
+                        print "fizz";
+                    }
+                } else {
+                    if (counter % 5 == 0) {
+                        print "buzz";
+                    } else {
+                        print counter;
+                    }
+                }
+
+                counter = counter + 1;
+            }
+        }
+        fizzbuzz(15);
+    )";
+    runSource(source);
+}
+
+TEST(ParserTests, Collatz) {
+    auto source = R"(
+        function collatz(n) {
+            while (n != 1) {
+                print n;
+                if (n % 2 == 0) {
+                    n = n / 2;
+                } else {
+                    n = 3 * n + 1;
+                }
+            }
+            print n;
+            print "Looks good to me";
+        }
+        collatz(15);
     )";
     runSource(source);
 }

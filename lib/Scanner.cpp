@@ -36,6 +36,7 @@ namespace Lox {
             case '+': put_token(TokenType::PLUS); break;
             case ';': put_token(TokenType::SEMICOLON); break;
             case '*': put_token(TokenType::STAR); break;
+            case '%': put_token(TokenType::MODULO); break;
             case '!':
                 put_token(match('=') ? TokenType::BANG_EQUAL : TokenType::BANG);
                 break;

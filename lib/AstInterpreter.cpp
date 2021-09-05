@@ -65,6 +65,12 @@ namespace Lox {
                 return std::make_shared<Number>(l / r);
             }
 
+            if (op.type_ == TokenType::MODULO) {
+                auto l = (int)as_number(left)->value;
+                auto r = (int)as_number(right)->value;
+                return std::make_shared<Number>(l % r);
+            }
+
             if (op.type_ == TokenType::PLUS) {
                 if (auto ls = std::dynamic_pointer_cast<String>(left)) {
                     if (auto rs = std::dynamic_pointer_cast<String>(right)) {
@@ -77,6 +83,18 @@ namespace Lox {
                         return  std::make_shared<Number>(ln->value + rn->value);
                     }
                 }
+            }
+
+            if (op.type_ == TokenType::AND) {
+                auto l = is_truthy(left);
+                auto r = is_truthy(right);
+                return std::make_shared<Boolean>(l and r);
+            }
+
+            if (op.type_ == TokenType::OR) {
+                auto l = is_truthy(left);
+                auto r = is_truthy(right);
+                return std::make_shared<Boolean>(l or r);
             }
 
             if (op.type_ == TokenType::GREATER
