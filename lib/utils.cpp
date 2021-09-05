@@ -3,6 +3,8 @@
 //
 
 #include <fmt/core.h>
+#include <utils.h>
+
 
 void report(int line, const std::string& where, const std::string& message) {
     fmt::print("[line {}]: Error {}: {}", line, where, message);

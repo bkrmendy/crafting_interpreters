@@ -10,7 +10,5 @@
 #include <memory>
 
 namespace Lox {
-
     std::string AstPrinter(const std::shared_ptr<Expr>& expr);
-
 }

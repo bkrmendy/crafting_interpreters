@@ -6,20 +6,14 @@
 #include <Value.h>
 #include <Expr.h>
 #include <ParseError.h>
+#include <utils.h>
 
 #include <iostream>
 
 namespace Lox {
 
     ExprPtr Parser::expression() {
-        if (auto expr = this->equality()) {
-            return expr;
-        }
-        if (auto expr = this->primary()) {
-            return expr;
-        }
-
-        return nullptr;
+        return assignment();
     }
 
     ExprPtr Parser::equality() {
@@ -72,7 +66,7 @@ namespace Lox {
     }
 
     bool Parser::is_at_end() {
-        return current_ >= tokens_.size();
+        return this->tokens_.at(this->current_).type_ == TokenType::END;
     }
 
     Token Parser::advance() {
@@ -129,6 +123,10 @@ namespace Lox {
             return std::make_shared<Grouping>(expr);
         }
 
+        if (match({ TokenType::IDENTIFIER })) {
+            return std::make_shared<Var>(previous());
+        }
+
         Token last = tokens_.at(current_);
         throw ParseError{last, "Expected expression."};
     }
@@ -143,10 +141,9 @@ namespace Lox {
         return primary();
     }
 
-    void Parser::consume(TokenType type, const std::string &message) {
+    Token Parser::consume(TokenType type, const std::string &message) {
         if (check(type)) {
-            advance();
-            return;
+            return advance();
         }
 
         Token last = tokens_.at(current_);
@@ -176,12 +173,93 @@ namespace Lox {
         }
     }
 
-    ExprPtr Parser::parse() {
+    std::vector<StatementPtr> Parser::parse() {
+        std::vector<StatementPtr> statements{};
         try {
-            return expression();
+            while (not is_at_end()) {
+                auto stmt = declaration();
+                statements.push_back(stmt);
+            }
+            return statements;
         } catch (ParseError& p) {
             std::cout << p.what() << std::endl;
+            return std::vector<StatementPtr>{};
+        }
+    }
+
+    StatementPtr Parser::statement() {
+        if (match({ TokenType::PRINT })) {
+            return printStatement();
+        }
+
+        if (match({ TokenType::LEFT_BRACE })) {
+            return block();
+        }
+
+        return expressionStatement();
+    }
+
+    StatementPtr Parser::expressionStatement() {
+        auto value = expression();
+        consume(TokenType::SEMICOLON, "Expect ';' after value.");
+        return std::make_shared<ExpressionStatement>(value);
+    }
+
+    StatementPtr Parser::printStatement() {
+        auto value = expression();
+        consume(TokenType::SEMICOLON, "Expect ';' after value.");
+        return std::make_shared<PrintStatement>(value);
+    }
+
+    StatementPtr Parser::declaration() {
+        try {
+            if (match({ TokenType::VAR })) {
+                return variableDeclaration();
+            }
+            return statement();
+        } catch (ParseError&) {
+            synchronize();
             return nullptr;
         }
+    }
+
+    StatementPtr Parser::variableDeclaration() {
+        Token name = consume(TokenType::IDENTIFIER, "Expected variable name.");
+        ExprPtr initializer = nullptr;
+        if (match({ TokenType::EQUAL })) {
+            initializer = expression();
+        }
+        consume(TokenType::SEMICOLON, "Expected ';' after variable declaration.");
+        return std::make_shared<VariableStatement>(name, initializer);
+    }
+
+    ExprPtr Parser::assignment() {
+        ExprPtr expr = equality();
+
+        if (match({ TokenType::EQUAL })) {
+            Token equals = previous();
+            ExprPtr value = assignment();
+
+            if (auto var = std::dynamic_pointer_cast<Var>(expr)) {
+                Token name = var->name;
+                return std::make_shared<Assignment>(name, expr);
+            }
+
+            error(equals.line_, "Invalid assignment target.");
+        }
+
+        return expr;
+    }
+
+    StatementPtr Parser::block() {
+        std::vector<StatementPtr> statements{};
+
+        while (not check({ TokenType::RIGHT_BRACE }) and not is_at_end()) {
+            statements.push_back(declaration());
+        }
+
+        consume(TokenType::RIGHT_BRACE, "Expected '}' after block.");
+
+        return std::make_shared<BlockStatement>(statements);
     }
 }

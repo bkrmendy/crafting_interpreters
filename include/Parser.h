@@ -6,6 +6,7 @@
 
 #include <Token.h>
 #include <Expr.h>
+#include <Statement.h>
 
 #include <memory>
 #include <utility>
@@ -20,7 +21,21 @@ namespace Lox {
 
         explicit Parser(std::vector<Token> tokens) : tokens_{std::move(tokens)}, current_{0} {}
 
-        ExprPtr parse();
+        std::vector<StatementPtr> parse();
+
+        StatementPtr declaration();
+
+        StatementPtr statement();
+
+        StatementPtr variableDeclaration();
+
+        StatementPtr expressionStatement();
+
+        StatementPtr printStatement();
+
+        StatementPtr block();
+
+        ExprPtr assignment();
 
         ExprPtr expression();
 
@@ -46,7 +61,7 @@ namespace Lox {
 
         Token previous();
 
-        void consume(TokenType type, const std::string& message);
+        Token consume(TokenType type, const std::string& message);
 
         void synchronize();
 

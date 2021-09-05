@@ -68,6 +68,26 @@ namespace Lox {
 
     using UnaryPtr = std::shared_ptr<Unary>;
 
+    class Var : public Expr {
+    public:
+        Token name;
+
+        explicit Var(Token name_) : name{std::move(name_)} {}
+        ~Var() override = default;
+    };
+
+    using VarPtr = std::shared_ptr<Var>;
+
+    class Assignment : public Expr {
+    public:
+        Token name;
+        ExprPtr value;
+
+        Assignment(Token name_, ExprPtr value_) : name{std::move(name_)}, value{std::move(value_)} {}
+
+        ~Assignment() override = default;
+    };
+
 }
 
 

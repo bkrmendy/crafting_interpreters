@@ -85,8 +85,8 @@ namespace Lox {
     }
 
     void Scanner::put_token(TokenType type) {
-        auto len = this->current_ - this->start_;
-        std::string text = source_.substr(this->start_, len);
+        auto length = this->current_ - this->start_;
+        std::string text = source_.substr(this->start_, length);
         this->tokens_.emplace_back(type, text, nullptr, this->line_);
     }
 
@@ -125,13 +125,15 @@ namespace Lox {
         }
 
         advance();
-        std::string value = this->source_.substr(this->start_ + 1, this->current_ - 1);
+        auto length = this->current_ - this->start_ - 2;
+        std::string value = this->source_.substr(this->start_ + 1, length);
         auto loxString = std::make_shared<Lox::String>(value);
         this->add_token(TokenType::STRING, loxString);
     }
 
     void Scanner::add_token(TokenType type, std::shared_ptr<Value> value) {
-        std::string text = source_.substr(this->start_, this->current_);
+        auto length = this->current_ - this->start_;
+        std::string text = source_.substr(this->start_, length);
         this->tokens_.emplace_back(type, text, std::move(value), this->line_);
     }
 
@@ -152,7 +154,8 @@ namespace Lox {
             advance();
         }
 
-        auto literal = this->source_.substr(this->start_, this->current_);
+        auto length = this->current_ - this->start_;
+        auto literal = this->source_.substr(this->start_, length);
         auto number = std::stod(literal);
         auto loxNumber = std::make_shared<Lox::Number>(number);
         this->add_token(TokenType::NUMBER, loxNumber);
@@ -181,7 +184,8 @@ namespace Lox {
             advance();
         }
 
-        auto literal = this->source_.substr(this->start_, this->current_);
+        auto length = this->current_ - this->start_;
+        auto literal = this->source_.substr(this->start_, length);
 
         TokenType type = TokenType::IDENTIFIER;
         if (this->keywords.count(literal) > 0) {

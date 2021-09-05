@@ -4,9 +4,16 @@
 
 #include <Expr.h>
 #include <Value.h>
+#include <Statement.h>
+#include <Environment.h>
 
 #include <memory>
+#include <functional>
+#include <string>
 
 namespace Lox {
-    std::shared_ptr<Value> interpret(const ExprPtr& expression);
+    using Writer = std::function<void(const std::string&)>;
+
+    std::shared_ptr<Value> interpret(Environment& env, const ExprPtr& expression);
+    std::shared_ptr<Value> interpret(Environment& env,const StatementPtr& statement, const Writer& writer);
 }
