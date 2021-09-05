@@ -6,13 +6,14 @@
 
 #include <string>
 #include <exception>
+#include <utility>
 
 namespace Lox {
     class RuntimeError : public std::exception {
-        const char* message_;
+        std::string message_;
 
     public:
-        explicit RuntimeError(const std::string& message) : message_{message.c_str()} {}
+        explicit RuntimeError(std::string message) : message_{std::move(message)} {}
 
         const char * what() const noexcept override;
     };

@@ -17,7 +17,7 @@ namespace Lox {
         std::map<std::string, std::shared_ptr<Value>> env_{};
     public:
         Environment() = default;
-        explicit Environment(std::shared_ptr<Environment> enclosing) : enclosing_{std::move(enclosing)} {}
+        explicit Environment(std::shared_ptr<Environment> enclosing) : enclosing_{enclosing} {}
         void define(const std::string& name, std::shared_ptr<Value> value);
         void assign(const std::string& name, std::shared_ptr<Value> value);
         std::shared_ptr<Value> get(const std::string& name) const;

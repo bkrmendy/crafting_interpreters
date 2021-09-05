@@ -22,7 +22,7 @@ void runSource(const std::string& source) {
     auto statements = parser.parse();
 
     auto output = std::vector<std::string>{};
-    auto env = Lox::Environment{};
+    auto env = std::make_shared<Lox::Environment>();
 
     auto result = std::shared_ptr<Lox::Value>(nullptr);
 
@@ -57,6 +57,25 @@ TEST(ParserTests, ComparisonGreaterThan) {
 
 TEST(ParserTests, ComparisonEqual) {
     runSource("10 == 10;");
+}
+
+TEST(ParserTests, ComparisonNotEqual) {
+    runSource("10 != 10;");
+}
+
+TEST(ParserTests, AllComparinons) {
+    auto source = R"(
+        print 1 < 2;
+        print 1 <= 1;
+        print 1 <= 2;
+        print 1 > 2;
+        print 1 >= 2;
+        print 2 >= 2;
+        print 1 == 1;
+        print 1 != 1;
+    )";
+
+    runSource(source);
 }
 
 TEST(ParserTests, Parentheses) {
@@ -114,6 +133,97 @@ TEST(ParserTests, Block) {
             var x = 3;
             print x;
         }
+    )";
+
+    runSource(source);
+}
+
+TEST(ParserTests, UpdateInPlace) {
+    auto source = R"(
+        var a = 4;
+        a = a + 1;
+        print a;
+    )";
+    runSource(source);
+}
+
+TEST(ParserTests, MultipleBlocks) {
+    auto source = R"(
+        {
+            var a = 4;
+            a = a + 3;
+            print a;
+        }
+
+        {
+            var b = 11;
+            b = b * 10;
+            print b;
+        }
+
+        print "done";
+    )";
+
+    runSource(source);
+}
+
+TEST(ParserTests, IfElseStatement) {
+    auto source = R"(
+        if (true) {
+            print "true";
+        } else {
+            print "false";
+        }
+
+        if (0) {
+            print "0 is truthy";
+        } else {
+            print "0 is falsy";
+        }
+    )";
+
+    runSource(source);
+}
+
+TEST(ParserTests, IfStatement) {
+    auto source = R"(
+        var a = 1;
+        if (a) {
+            print "a is truthy";
+        }
+
+        a = a - 1;
+
+        if (a) {
+            print "a is still truthy";
+        } else {
+            print "a is falsy";
+        }
+    )";
+
+    runSource(source);
+}
+
+TEST(ParserTests, WhileLoop) {
+    auto source = R"(
+        var a = 0;
+        while (a < 10) {
+            print a;
+            a = a + 1;
+        }
+        print "done!";
+    )";
+
+    runSource(source);
+}
+
+TEST(ParserTests, ForLoop) {
+    auto source = R"(
+        var result = 1;
+        for (var i = 1; i <= 5; i = i + 1) {
+            result = result * i;
+        }
+        print result;
     )";
     runSource(source);
 }

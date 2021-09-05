@@ -6,6 +6,6 @@
 
 namespace Lox {
     const char* RuntimeError::what() const noexcept {
-        return this->message_;
+        return this->message_.c_str();
     }
 }

@@ -87,7 +87,6 @@ namespace Lox {
 
         ~Assignment() override = default;
     };
-
 }
 
 

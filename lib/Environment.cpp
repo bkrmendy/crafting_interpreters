@@ -28,10 +28,12 @@ namespace Lox {
     void Environment::assign(const std::string &name, std::shared_ptr<Value> value) {
         if (this->env_.contains(name)) {
             this->env_[name] = std::move(value);
+            return;
         }
 
         if (this->enclosing_ != nullptr) {
             this->enclosing_->assign(name, value);
+            return;
         }
         throw RuntimeError("Undefined variable: " + name);
     }

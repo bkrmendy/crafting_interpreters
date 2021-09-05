@@ -11,7 +11,7 @@
 #include <memory>
 
 namespace Lox {
-    std::shared_ptr<Value> interpret(Environment& env, const ExprPtr& expression) {
+    std::shared_ptr<Value> interpret(const std::shared_ptr<Environment>& env, const ExprPtr& expression) {
         if (LiteralPtr literal = std::dynamic_pointer_cast<Literal>(expression)) {
             return literal->value;
         }
@@ -96,26 +96,26 @@ namespace Lox {
             }
 
             if (op.type_ == TokenType::BANG_EQUAL) {
-                std::make_shared<Boolean>(not is_equal(left, right));
+                return std::make_shared<Boolean>(not is_equal(left, right));
             }
 
             throw RuntimeError(AstPrinter(binary));
         }
 
         if (auto var = std::dynamic_pointer_cast<Var>(expression)) {
-            return env.get(var->name.lexeme_);
+            return env->get(var->name.lexeme_);
         }
 
         if (auto assignment = std::dynamic_pointer_cast<Assignment>(expression)) {
             auto value = interpret(env, assignment->value);
-            env.define(assignment->name.lexeme_, value);
+            env->assign(assignment->name.lexeme_, value);
             return value;
         }
 
         assert(0 && "Unknown expression type");
     }
 
-    std::shared_ptr<Value> interpret(Environment& env, const StatementPtr& statement, const Writer& writer) {
+    std::shared_ptr<Value> interpret(const std::shared_ptr<Environment>& env, const StatementPtr& statement, const Writer& writer) {
         if (auto printStatement = std::dynamic_pointer_cast<PrintStatement>(statement)) {
             auto expr = interpret(env, printStatement->expression);
             writer(expr->toString());
@@ -128,18 +128,34 @@ namespace Lox {
 
         if (auto declaration = std::dynamic_pointer_cast<VariableStatement>(statement)) {
             auto value = interpret(env, declaration->initializer);
-            env.define(declaration->name.lexeme_, value);
+            env->define(declaration->name.lexeme_, value);
             return value;
         }
 
         if (auto block = std::dynamic_pointer_cast<BlockStatement>(statement)) {
-            auto nextEnv = Environment(std::make_shared<Environment>(env));
+            auto nextEnv = std::make_shared<Environment>(env);
             auto result = static_cast<std::shared_ptr<Value>>(nullptr);
 
             for (auto& stmt : block->statements) {
                 result = interpret(nextEnv, stmt, writer);
             }
 
+            return result;
+        }
+
+        if (auto ifStatement = std::dynamic_pointer_cast<IfStatement>(statement)) {
+            if (is_truthy(interpret(env, ifStatement->condition))) {
+                return interpret(env, ifStatement->trueBranch, writer);
+            } else {
+                return interpret(env, ifStatement->falseBranch, writer);
+            }
+        }
+
+        if (auto whileStatement = std::dynamic_pointer_cast<WhileStatement>(statement)) {
+            auto result = std::shared_ptr<Value>(nullptr);
+            while(is_truthy(interpret(env, whileStatement->condition))) {
+                result = interpret(env, whileStatement->body, writer);
+            }
             return result;
         }
 

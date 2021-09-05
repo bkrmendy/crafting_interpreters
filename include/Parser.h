@@ -27,13 +27,19 @@ namespace Lox {
 
         StatementPtr statement();
 
-        StatementPtr variableDeclaration();
+        VariableStatementPtr variableDeclaration();
 
-        StatementPtr expressionStatement();
+        ExprStatementPtr expressionStatement();
 
-        StatementPtr printStatement();
+        PrintStatementPtr printStatement();
 
-        StatementPtr block();
+        BlockStatementPtr block();
+
+        IfStatementPtr ifStatement();
+
+        WhileStatementPtr whileStatement();
+
+        BlockStatementPtr forStatement();
 
         ExprPtr assignment();
 

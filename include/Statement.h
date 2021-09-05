@@ -49,6 +49,8 @@ namespace Lox {
         ~VariableStatement() override = default;
     };
 
+    using VariableStatementPtr = std::shared_ptr<VariableStatement>;
+
     class BlockStatement : public Statement {
     public:
         std::vector<StatementPtr> statements;
@@ -56,4 +58,32 @@ namespace Lox {
 
         ~BlockStatement() override = default;
     };
+
+    using BlockStatementPtr = std::shared_ptr<BlockStatement>;
+
+    class IfStatement : public Statement {
+    public:
+        ExprPtr condition;
+        BlockStatementPtr trueBranch;
+        BlockStatementPtr falseBranch;
+
+        IfStatement(ExprPtr condition_, BlockStatementPtr true_, BlockStatementPtr false_)
+            : condition{std::move(condition_)}, trueBranch{std::move(true_)}, falseBranch{std::move(false_)} {}
+
+        ~IfStatement() override = default;
+    };
+
+    using IfStatementPtr = std::shared_ptr<IfStatement>;
+
+    class WhileStatement : public Statement {
+    public:
+        ExprPtr condition;
+        BlockStatementPtr body;
+
+        WhileStatement(ExprPtr condition_, BlockStatementPtr body_) : condition{std::move(condition_)}, body{std::move(body_)} {}
+
+        ~WhileStatement() override = default;
+    };
+
+    using WhileStatementPtr = std::shared_ptr<WhileStatement>;
 }

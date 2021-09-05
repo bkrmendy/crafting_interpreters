@@ -196,16 +196,28 @@ namespace Lox {
             return block();
         }
 
+        if (match({ TokenType :: IF })) {
+            return ifStatement();
+        }
+
+        if (match({ TokenType::WHILE })) {
+            return whileStatement();
+        }
+
+        if (match({ TokenType::FOR })) {
+            return  forStatement();
+        }
+
         return expressionStatement();
     }
 
-    StatementPtr Parser::expressionStatement() {
+    ExprStatementPtr Parser::expressionStatement() {
         auto value = expression();
         consume(TokenType::SEMICOLON, "Expect ';' after value.");
         return std::make_shared<ExpressionStatement>(value);
     }
 
-    StatementPtr Parser::printStatement() {
+    PrintStatementPtr Parser::printStatement() {
         auto value = expression();
         consume(TokenType::SEMICOLON, "Expect ';' after value.");
         return std::make_shared<PrintStatement>(value);
@@ -223,7 +235,7 @@ namespace Lox {
         }
     }
 
-    StatementPtr Parser::variableDeclaration() {
+    VariableStatementPtr Parser::variableDeclaration() {
         Token name = consume(TokenType::IDENTIFIER, "Expected variable name.");
         ExprPtr initializer = nullptr;
         if (match({ TokenType::EQUAL })) {
@@ -242,7 +254,7 @@ namespace Lox {
 
             if (auto var = std::dynamic_pointer_cast<Var>(expr)) {
                 Token name = var->name;
-                return std::make_shared<Assignment>(name, expr);
+                return std::make_shared<Assignment>(name, value);
             }
 
             error(equals.line_, "Invalid assignment target.");
@@ -251,15 +263,65 @@ namespace Lox {
         return expr;
     }
 
-    StatementPtr Parser::block() {
+    BlockStatementPtr Parser::block() {
         std::vector<StatementPtr> statements{};
 
         while (not check({ TokenType::RIGHT_BRACE }) and not is_at_end()) {
-            statements.push_back(declaration());
+            auto decl = declaration();
+            statements.push_back(decl);
         }
 
         consume(TokenType::RIGHT_BRACE, "Expected '}' after block.");
 
         return std::make_shared<BlockStatement>(statements);
+    }
+
+    IfStatementPtr Parser::ifStatement() {
+        consume(TokenType::LEFT_PAREN, "Expected `(`");
+        auto condition = expression();
+        consume(TokenType::RIGHT_PAREN, "Expected `)`");
+        consume(TokenType::LEFT_BRACE, "Expected `{`");
+        auto trueBranch = block();
+
+        auto falseBranch = std::shared_ptr<BlockStatement>(nullptr);
+        if (match({ TokenType::ELSE })) {
+            consume(TokenType::LEFT_BRACE, "Expected `{`");
+            falseBranch = block();
+        }
+        return std::make_shared<IfStatement>(condition, trueBranch, falseBranch);
+    }
+
+    WhileStatementPtr Parser::whileStatement() {
+        consume(TokenType::LEFT_PAREN, "Expected `(`");
+        auto condition = expression();
+        consume(TokenType::RIGHT_PAREN, "Expected `)`");
+        consume(TokenType::LEFT_BRACE, "Expected `{`");
+        auto body = block();
+
+        return std::make_shared<WhileStatement>(condition, body);
+    }
+
+    BlockStatementPtr Parser::forStatement() {
+        consume(TokenType::LEFT_PAREN, "Expected `(`");
+        consume(TokenType::VAR, "Expected `var`");
+        auto initialization = variableDeclaration();
+        auto loopCondition = expression();
+        consume(TokenType::SEMICOLON, "Expected `;`");
+        auto increment = assignment();
+        consume(TokenType::RIGHT_PAREN, "Expected `)`");
+        consume(TokenType::LEFT_BRACE, "Expected `{");
+        auto body = block();
+
+        std::vector<StatementPtr> bodyWithIncrement = {
+           body,
+           std::make_shared<ExpressionStatement>(increment)
+       };
+
+        std::vector<StatementPtr> desugaredFor = {
+            initialization,
+            std::make_shared<WhileStatement>(loopCondition, std::make_shared<BlockStatement>(bodyWithIncrement))
+        };
+
+        return std::make_shared<BlockStatement>(desugaredFor);
     }
 }
